@@ -14,7 +14,7 @@ const db = mysql.createConnection({
   host: '127.0.0.1',     // Replace with your DB host
   user: 'root',          // Replace with your DB user
   password: 'lakshya0408',  // Replace with your DB password
-  database: 'balaji_db' // Replace with your DB name
+  database: 'balaji_db'  // Replace with your DB name
 });
 
 // Connect to the Database
@@ -41,6 +41,7 @@ app.post('/api/submit', (req, res) => {
   });
 });
 
+// API endpoint to fetch all persons
 app.get('/api/persons', (req, res) => {
   const query = 'SELECT * FROM persons'; // Replace 'persons' with your table name
 
@@ -55,6 +56,40 @@ app.get('/api/persons', (req, res) => {
   });
 });
 
+// API endpoint to update a person
+app.put('/api/persons/:personId', (req, res) => {
+  const { personId } = req.params;
+  const { lastName, firstName, address, city } = req.body;
+
+  const query = 'UPDATE persons SET lastName = ?, firstName = ?, address = ?, city = ? WHERE personId = ?';
+  db.query(query, [lastName, firstName, address, city, personId], (err, result) => {
+    if (err) {
+      console.error('Error updating data:', err);
+      res.status(500).send('Error updating data');
+    } else if (result.affectedRows === 0) {
+      res.status(404).send('Person not found');
+    } else {
+      res.status(200).send('Data successfully updated');
+    }
+  });
+});
+
+// API endpoint to delete a person
+app.delete('/api/persons/:personId', (req, res) => {
+  const { personId } = req.params;
+
+  const query = 'DELETE FROM persons WHERE personId = ?';
+  db.query(query, [personId], (err, result) => {
+    if (err) {
+      console.error('Error deleting data:', err);
+      res.status(500).send('Error deleting data');
+    } else if (result.affectedRows === 0) {
+      res.status(404).send('Person not found');
+    } else {
+      res.status(200).send('Data successfully deleted');
+    }
+  });
+});
 
 // Start the Server
 app.listen(PORT, () => {
