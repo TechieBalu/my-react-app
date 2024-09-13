@@ -41,6 +41,21 @@ app.post('/api/submit', (req, res) => {
   });
 });
 
+app.get('/api/persons', (req, res) => {
+  const query = 'SELECT * FROM persons'; // Replace 'persons' with your table name
+
+  // Execute the query
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching data from the database:', err);
+      res.status(500).json({ error: 'Failed to fetch data' });
+      return;
+    }
+    res.json(results); // Send the fetched data as JSON
+  });
+});
+
+
 // Start the Server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

@@ -1,49 +1,54 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios'; // Import Axios for HTTP requests
-import './PersonTable.css'; // Import the CSS file for styling
+import axios from 'axios';
+import './PersonTable.css'; // Assuming you have some CSS for styling
 
 const PersonTable = () => {
-  const [data, setData] = useState([]);
+  const [persons, setPersons] = useState([]); // State to store the fetched data
 
-  // Fetch data from the backend API
+  // Fetch data from the backend when the component mounts
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/persons');
-        setData(response.data); // Set the fetched data to state
-      } catch (error) {
+    axios.get('http://localhost:5000/api/persons')
+      .then(response => {
+        console.log('Fetched data:', response.data); // Check if data is fetched
+        setPersons(response.data); // Set the state with fetched data
+      })
+      .catch(error => {
         console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
+      });
   }, []);
 
   return (
-    <div className="table-container">
-      <h2>Person Data Table</h2>
-      <table className="person-table">
-        <thead>
-          <tr>
-            <th>Person ID</th>
-            <th>Last Name</th>
-            <th>First Name</th>
-            <th>Address</th>
-            <th>City</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((person) => (
-            <tr key={person.personId}>
-              <td>{person.personId}</td>
-              <td>{person.lastName}</td>
-              <td>{person.firstName}</td>
-              <td>{person.address}</td>
-              <td>{person.city}</td>
+    <div>
+      <h2>Person Data</h2>
+      {persons.length === 0 ? (
+        <p>No data available</p> // Show this when no data is available
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th>Person ID</th>
+              <th>Last Name</th>
+              <th>First Name</th>
+              <th>Address</th>
+              <th>City</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {persons.map((person) => (
+                
+              <tr key={person.PersonID}>
+                 <td>{person.PersonID}</td>
+                <td>{person.LastName}</td>
+                <td>{person.FirstName}</td>
+                <td>{person.Address}</td>
+                <td>{person.City}</td>
+              </tr>
+            ))}
+
+
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };
